@@ -1,0 +1,96 @@
+
+----------------------Q1-------------
+CREATE TABLE EMPLOYEE (
+	EmpNo INT PRIMARY KEY,
+	EmpName VARCHAR(30),
+	BirthDay DATE,
+	DeptNo INT,
+	MgrNo INT NOT NULL,
+	StartDate DATE,
+	Salary MONEY,
+	Level SMALLINT,
+	Status SMALLINT,
+	CONSTRAINT Level_CK CHECK(Level BETWEEN 1 AND 7),
+	CONSTRAINT Status_CK CHECK(Status BETWEEN 0 AND 2),
+	Note VARCHAR(255)
+);
+
+CREATE TABLE SKILL(
+	SkillNo INT PRIMARY KEY IDENTITY(1,1),
+	SkillName VARCHAR(20),
+	Note VARCHAR(255)
+);
+
+CREATE TABLE DEPARTMENT(
+	DeptNo INT PRIMARY KEY IDENTITY(1,1),
+	DeptName VARCHAR(30),
+	Note VARCHAR(255)
+);
+
+CREATE TABLE EMP_SKILL(
+	SkillNo INT FOREIGN KEY REFERENCES SKILL(SkillNo),
+	EmpNo INT FOREIGN KEY REFERENCES EMPLOYEE(EmpNo),
+	SkillLevel SMALLINT, 
+	CONSTRAINT SkillLevel_CK CHECK(SkillLevel BETWEEN 1 AND 3),
+	RegDate DATE,
+	Description VARCHAR(255),
+	PRIMARY KEY (SkillNo,EmpNo)
+);
+--------------------------Q2-----------
+ALTER TABLE EMPLOYEE 
+ADD Email VARCHAR(50) UNIQUE;
+
+ALTER TABLE EMPLOYEE 
+ADD CONSTRAINT df_MgrNo 
+DEFAULT 0 FOR MgrNo,
+CONSTRAINT df_Status 
+DEFAULT 0 FOR Status 
+;
+----------Q3------------
+ALTER TABLE EMPLOYEE
+ADD CONSTRAINT FK_DeptNo
+FOREIGN KEY (DeptNo) REFERENCES DEPARTMENT(DeptNo);
+
+ALTER TABLE EMP_SKILL 
+DROP COLUMN Description;
+-----------------Q4---------------
+INSERT INTO DEPARTMENT
+VALUES
+	('CNTT','SOMETHING'),
+	('AI','SOMETHING'),
+	('MC','SOMETHING'),
+	('DL','SOMETHING'),
+	('ATTT','SOMETHING')
+;
+
+INSERT INTO EMPLOYEE 
+VALUES
+	(1,'Nguyen Tho Cuong','1998/01/02',1,2,'2021/06/08',1000,4,0,'Work Hard','cuong@gmail.com'),	
+	(2,'Nguyen Anh Tu','1998/02/03',5,3,'2021/06/08',1100,5,0,'Work Hard','tu@gmail.com'),
+	(3,'Le Anh Duc','1998/03/04',1,4,'2021/06/08',2000,7,1,'Work Hard','duc@gmail.com'),
+	(4,'Vo Hai Thien','1998/04/05',3,5,'2021/06/08',1500,5,2,'Work Hard','thien@gmail.com'),
+	(5,'Trinh Van Dieu','1998/05/06',2,1,'2021/06/08',1500,6,0,'Work Hard','dieu@gmail.com')
+;
+
+INSERT INTO SKILL
+VALUES
+	('C','BASIC'),
+	('C++','BASIC'),
+	('JAVA','BASIC'),
+	('PYTHON','BASIC'),
+	('GOLANG','BASIC')
+;
+
+INSERT INTO EMP_SKILL
+VALUES
+	(2,1,3,'2021/12/12'),
+	(1,2,2,'2021/12/12'),
+	(4,3,3,'2021/12/12'),
+	(5,4,2,'2021/12/12'),
+	(3,5,3,'2021/12/12')
+;
+
+CREATE VIEW EMPLOYEE_TRACKING AS
+SELECT EmpNo,EmpName,Level
+FROM EMPLOYEE
+WHERE Level BETWEEN 3 AND 5;
